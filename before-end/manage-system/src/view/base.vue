@@ -21,31 +21,17 @@
               text-color="#666"
               active-text-color="#000"
             >
-              <!-- 统计 -->
-              <el-submenu index="1">
+             <!-- 统计 -->
+              <el-submenu :index="(index+1).toString()" v-for="(val,index) in newlist" :key="index">
                 <template slot="title">
                   <i class="el-icon-s-data"></i>
-                  <span>统计</span>
+                  <span>{{val.title}}</span>
                 </template>
-                <el-menu-item-group>
+                <el-menu-item-group >
                   <template slot="title" text-color="#333">
-                    <el-menu-item index="1-1" @click="$router.push({'name':'useranalysis'})">用户分析</el-menu-item>
-                    <el-menu-item index="1-2" @click="$router.push({'name':'orderanalysis'})">订单分析</el-menu-item>
-                  </template>
-                </el-menu-item-group>
-              </el-submenu>
-              <!-- 管理 -->
-              <el-submenu index="2">
-                <template slot="title">
-                  <i class="el-icon-folder-opened"></i>
-                  <span>管理</span>
-                </template>
-                <el-menu-item-group>
-                  <template slot="title">
-                    <el-menu-item index="2-1">用户管理</el-menu-item>
-                    <el-menu-item index="2-2">卡券管理</el-menu-item>
-                    <el-menu-item index="2-3">商品管理</el-menu-item>
-                    <el-menu-item index="2-4">订单管理</el-menu-item>
+                    <el-menu-item v-for="(v,i) in val.children" :key="`${index}-${i}`" :index="`${index+1}-${i}`"
+                     @click="$router.push({'name':v.name})"
+                     >{{v.title}}</el-menu-item>
                   </template>
                 </el-menu-item-group>
               </el-submenu>
@@ -74,19 +60,6 @@
                   <el-menu-item index="4-2">账户权限</el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
-              <!-- 权限管理 -->
-              <el-submenu index="5">
-                <template slot="title">
-                  <i class="el-icon-folder-opened"></i>
-                  <span>权限管理</span>
-                </template>
-                <el-menu-item-group>
-                  <template slot="title">
-                    <el-menu-item index="5-1"  @click="$router.push({'name':'limitList'})">权限列表</el-menu-item>
-                    <!-- <el-menu-item index="5-2">卡券管理</el-menu-item> -->
-                  </template>
-                </el-menu-item-group>
-              </el-submenu>
             </el-menu>
           </el-col>
         </el-aside>
@@ -99,6 +72,23 @@
 </template>
 <script>
 export default {
+  data(){
+    return {
+      list:[],
+    }
+  },
+  mounted(){
+    this.axios.get("limitGet").then(res=>{
+      this.list=res.data.data;
+     
+    })
+  },
+  computed:{
+    newlist(){
+
+      return this.tree(this.list,0)
+    }
+  },
   methods: {
     handleOpen(key, keyPath) {
       console.log(key, keyPath);
@@ -109,9 +99,26 @@ export default {
     back() {
       localStorage.removeItem("manage");
       this.$router.push({ name: "login" });
+    },
+     tree(info, pid) {
+      var data = [];
+      for (let i in info) {
+        if (info[i].pid == pid) {
+          var obj = {
+            ...info[i],
+            children: this.tree(info, info[i]._id)
+          };
+          //如果没有子权限，将子权限面板删除
+          if(obj.children.length==0){
+            delete obj.children;
+          }
+            data.push(obj);
+        }
+      }
+      return data;
     }
+  },
   }
-};
 </script>
 <style>
 *{

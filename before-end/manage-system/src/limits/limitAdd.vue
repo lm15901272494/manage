@@ -17,6 +17,7 @@
   </div>
 </template>
 <script>
+import tree from "@/myjs/tree.js"
 export default {
   data() {
     return {
@@ -36,7 +37,7 @@ export default {
     this.axios.get("/limitGet").then(res => {
       if (res.data.err_code == 200) {
         let info = res.data.data;
-        let addinfo=this.tree(info,0);
+        let addinfo=tree(info,0);
         this.options=[...this.options,...addinfo]
         //pid==0，代表此权限为一级权限
       }
@@ -55,7 +56,7 @@ export default {
       this.axios.post("/limitAdd",obj).then((res)=>{
         if(res.data.err_code==200){
           alert("添加成功")
-          this.$router.push({'name':'limitList'})
+          this.$router.push({'name':'limitlist'})
         }else{
           alert("添加失败，请重试！")
           this.name="";
@@ -63,26 +64,25 @@ export default {
         }
       })
     },
-    tree(info, pid) {
-      var data = [];
-      for (let i in info) {
-        if (info[i].pid == pid) {
-          var obj = {
-            value: info[i]._id,
-            label: info[i].title,
-            children: this.tree(info, info[i]._id)
-          };
-          //如果没有子权限，将子权限面板删除
-          if(obj.children.length==0){
-            delete obj.children;
-          }
-            data.push(obj);
-        }
-      
-      }
-      // console.log(data);
-      return data;
-    }
+    // tree(info, pid) {
+    //   var data = [];
+    //   for (let i in info) {
+    //     if (info[i].pid == pid) {
+    //       var obj = {
+    //         value: info[i]._id,
+    //         label: info[i].title,
+    //         children: this.tree(info, info[i]._id)
+    //       };
+    //       //如果没有子权限，将子权限面板删除
+    //       if(obj.children.length==0){
+    //         delete obj.children;
+    //       }
+    //         data.push(obj);
+    //     }
+    //   }
+    //   // console.log(data);
+    //   return data;
+    // }
   },
 
   

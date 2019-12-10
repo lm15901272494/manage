@@ -6,8 +6,13 @@ const base=()=>import("@/view/base");
 
 
 
-const limitList =()=>import("@/limits/limitList")
-const  limitAdd =()=>import("@/limits/limitAdd")
+const limitlist =()=>import("@/limits/limitlist")
+const  limitadd =()=>import("@/limits/limitadd")
+const  rolelist =()=>import("@/limits/rolelist")
+const  roleadd =()=>import("@/limits/roleadd")
+const  rolechange =()=>import("@/limits/rolechange")
+const  managerlist =()=>import("@/limits/managerlist")
+const  manageradd =()=>import("@/limits/manageradd")
 const useranalysis=()=>import("@/components/analysis/useranalysis")
 const orderanalysis=()=>import("@/components/analysis/orderanalysis")
 Vue.use(Router)
@@ -35,14 +40,39 @@ let router= new Router({
           component: orderanalysis
         },
         {
-          path: 'limitList',
-          name: 'limitList',
-          component: limitList
+          path: 'limitlist',
+          name: 'limitlist',
+          component: limitlist
         },
         {
-          path: 'limitAdd',
-          name: 'limitAdd',
-          component: limitAdd
+          path: 'limitadd',
+          name: 'limitadd',
+          component: limitadd
+        },
+        {
+          path: 'rolelist',
+          name: 'rolelist',
+          component: rolelist
+        },
+        {
+          path: 'roleadd',
+          name: 'roleadd',
+          component: roleadd
+        },
+        {
+          path: 'rolechange/:id',
+          name: 'rolechange',
+          component: rolechange
+        },
+        {
+          path: 'managerlist',
+          name: 'managerlist',
+          component: managerlist
+        },
+        {
+          path: 'manageradd',
+          name: 'manageradd',
+          component: manageradd
         },
 
       ]
