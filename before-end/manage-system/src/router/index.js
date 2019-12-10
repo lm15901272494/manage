@@ -6,13 +6,14 @@ const base=()=>import("@/view/base");
 
 
 
-const limitlist =()=>import("@/limits/limitlist")
-const  limitadd =()=>import("@/limits/limitadd")
-const  rolelist =()=>import("@/limits/rolelist")
-const  roleadd =()=>import("@/limits/roleadd")
-const  rolechange =()=>import("@/limits/rolechange")
-const  managerlist =()=>import("@/limits/managerlist")
-const  manageradd =()=>import("@/limits/manageradd")
+const limitlist =()=>import("@/components/limits/limitlist")
+const  limitadd =()=>import("@/components/limits/limitadd")
+const  rolelist =()=>import("@/components/limits/rolelist")
+const  roleadd =()=>import("@/components/limits/roleadd")
+const  rolechange =()=>import("@/components/limits/rolechange")
+const  managerlist =()=>import("@/components/limits/managerlist")
+const  manageradd =()=>import("@/components/limits/manageradd")
+const  managerchange =()=>import("@/components/limits/managerchange")
 const useranalysis=()=>import("@/components/analysis/useranalysis")
 const orderanalysis=()=>import("@/components/analysis/orderanalysis")
 Vue.use(Router)
@@ -74,6 +75,11 @@ let router= new Router({
           name: 'manageradd',
           component: manageradd
         },
+        {
+          path: 'managerchange/:id',
+          name: 'managerchange',
+          component: managerchange
+        },
 
       ]
 
@@ -87,7 +93,8 @@ let router= new Router({
 //全局路由--每次今日页面时，验证token是否存在或过期
 import axios from "axios";
 router.beforeEach((to,from,next)=>{
-  let token=localStorage.getItem("manage")?JSON.parse(localStorage.getItem("manage")).token:[]
+  let token=localStorage.getItem("manage")?JSON.parse(localStorage.getItem("manage")).token:[];
+  let id=localStorage.getItem("manage")?JSON.parse(localStorage.getItem("manage")).id:[]
 
    //如果不是登录页面，则验证token
    if(to.name !="login"){
@@ -98,7 +105,19 @@ router.beforeEach((to,from,next)=>{
         // alert("请重新登录")
          router.push({"name":"login"})
        }else{
-         next();
+         //没有权限，请联系超管
+         axios.get("/checklimit",{params:{
+           id:id,
+           name:to.name
+           //将要检测的name值==to.name
+         }}).then(res=>{
+           if(res.data.err_code==200){
+            next();
+           }else{
+             alert("你没有权限进入此页面，请联系超管")
+           }
+         })
+        // next()
        }
      })
    }else{

@@ -78,23 +78,23 @@ export default {
     }
   },
   mounted(){
-    this.axios.get("limitGet").then(res=>{
-      this.list=res.data.data;
-     
+    this.axios.get("/limitShow",{params:{
+      id:JSON.parse(localStorage.getItem("manage")).id
+    }}).then(res=>{
+      this.list=res.data.limitArr;
     })
   },
   computed:{
     newlist(){
-
       return this.tree(this.list,0)
     }
   },
   methods: {
     handleOpen(key, keyPath) {
-      console.log(key, keyPath);
+      // console.log(key, keyPath);
     },
     handleClose(key, keyPath) {
-      console.log(key, keyPath);
+      // console.log(key, keyPath);
     },
     back() {
       localStorage.removeItem("manage");
