@@ -35,7 +35,6 @@ export default {
     this.axios.get("/roleId",{params:{
         id:this.$route.params.id
     }}).then(res=>{
-        console.log(res)
         if(res.data.err_code==200){
             this.title=res.data.data.title;
             this.value=res.data.data.limitId;
@@ -48,7 +47,6 @@ export default {
       let obj={id:this.$route.params.id,title:this.title,limitId:this.value}
       // 将obj通过ajax,传递给node,将角色名，角色所属权限的数组插入到数据库中
       this.axios.post("/roleChange",obj).then(res=>{
-        console.log(res)
         if(res.data.err_code==200){
           alert("修改成功")
           this.$router.push({"name":"rolelist"})

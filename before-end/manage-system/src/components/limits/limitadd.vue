@@ -13,7 +13,7 @@
       </el-form-item>
     </el-form>
     <el-button type="success" plain @click="add">添加</el-button>
-    <el-button type="primary" plain @click="$router.push({'name':'limitList'})">返回</el-button>
+    <el-button type="primary" plain @click="$router.push({'name':'limitlist'})">返回</el-button>
   </div>
 </template>
 <script>

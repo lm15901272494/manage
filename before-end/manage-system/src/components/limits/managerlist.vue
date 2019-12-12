@@ -38,7 +38,6 @@ export default {
   },
   mounted(){
     this.axios.get("/managerGet").then(res=>{
-      console.log(res)
       if(res.data.err_code==200){
         this.tableData=res.data.data;
       }

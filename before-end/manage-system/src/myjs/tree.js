@@ -5,6 +5,7 @@ function tree(info, pid) {
         var obj = {
           value: info[i]._id,
           label: info[i].title,
+          src:info[i].src,
           children: tree(info, info[i]._id)
         };
         //如果没有子权限，将子权限面板删除

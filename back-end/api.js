@@ -333,7 +333,7 @@ app.get("/managerId", (req, res) => {
                 "err_code": 400
             })
         } else {
-            console.log(data+'asd')
+            // console.log(data+'asd')
             res.send({
                 "err_code": 200,
                 data: data
@@ -428,6 +428,86 @@ app.get("/checklimit", (req, res) => {
             })
     })
 })
+// -----------------------------------------------------------------------------------------------------------------
+// ******
+//商品分类管理-增加--图片上传
+//托管静态文件
+app.use(express.static('public'))
+//引入模块
+var multer=require("multer");
+//使用multer模块
+let storage=multer.diskStorage({
+    //将文件存储到硬盘上
+    // 文件路径
+    destination:function(req,file,cb){
+         cb(null,"./public/sort")
+    },
+    //文件名
+    filename:function(req,file,cb){            
+        cb(null,file.originalname)
+    }   
+
+})
+var upload=multer({storage:storage});
+//{storage:storage}  将文件存储
+app.post("/fileup",upload.single("picture"),(req,res)=>{
+    //接收文件，需要模块multer
+    // console.log(req.headers)
+    //  console.log(req.file)
+     let imgurl="/sort/"+req.file.originalname;
+     res.send({"imgurl":imgurl})
+})
+
+//商品分类管理
+//1、查找所有分类
+const sortModel=require("./model/sorts")
+app.get("/sortGet",(req,res)=>{
+    sortModel.find({},(err,data)=>{
+        if (err) {
+            res.send({
+                "err_code": 400
+            })
+        } else {
+            res.send({
+                "err_code": 200,
+                data: data
+            })
+        }
+
+    })
+})
+//2、添加分类
+   app.post("/sortAdd",(req,res)=>{
+       let {title,src,pid}=req.body;
+       let obj={"title":title,"src":src,"pid":pid}
+       sortModel.create(obj,(err,data)=>{
+        if (err) {
+            res.send({
+                "err_code": 400
+            })
+        } else {
+            res.send({
+                "err_code": 200,
+                data: data
+            })
+        }
+       })
+   })
+//3、删除分类
+//4、修改分类---根据分类id查找分类信息
+//5、修改分类---将查出来的数据修改
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -16,6 +16,12 @@ const  manageradd =()=>import("@/components/limits/manageradd")
 const  managerchange =()=>import("@/components/limits/managerchange")
 const useranalysis=()=>import("@/components/analysis/useranalysis")
 const orderanalysis=()=>import("@/components/analysis/orderanalysis")
+
+const goodsort=()=>import("@/components/sortmanage/goodsort")
+const sortadd=()=>import("@/components/sortmanage/sortadd")
+
+const goodmanage=()=>import("@/components/goodmanage/goodlist")
+const goodadd=()=>import("@/components/goodmanage/goodadd")
 Vue.use(Router)
 
 let router= new Router({
@@ -79,6 +85,26 @@ let router= new Router({
           path: 'managerchange/:id',
           name: 'managerchange',
           component: managerchange
+        },
+        {
+          path: 'sortadd',
+          name: 'sortadd',
+          component: sortadd
+        },
+        {
+          path: 'goodsort',
+          name: 'goodsort',
+          component: goodsort
+        },
+        {
+          path: 'goodadd',
+          name: 'goodadd',
+          component: goodadd
+        },
+        {
+          path: 'goodmanage',
+          name: 'goodmanage',
+          component: goodmanage
         },
 
       ]
