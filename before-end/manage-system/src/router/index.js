@@ -16,12 +16,18 @@ const  manageradd =()=>import("@/components/limits/manageradd")
 const  managerchange =()=>import("@/components/limits/managerchange")
 const useranalysis=()=>import("@/components/analysis/useranalysis")
 const orderanalysis=()=>import("@/components/analysis/orderanalysis")
-
+//商品分类管理
 const goodsort=()=>import("@/components/sortmanage/goodsort")
 const sortadd=()=>import("@/components/sortmanage/sortadd")
-
+//商品管理
 const goodmanage=()=>import("@/components/goodmanage/goodlist")
 const goodadd=()=>import("@/components/goodmanage/goodadd")
+
+//订单管理
+const orderlist=()=>import("@/components/ordermanage/orderlist")
+const orderadd=()=>import("@/components/ordermanage/orderadd")
+
+
 Vue.use(Router)
 
 let router= new Router({
@@ -105,6 +111,16 @@ let router= new Router({
           path: 'goodmanage',
           name: 'goodmanage',
           component: goodmanage
+        },
+        {
+          path: 'orderadd',
+          name: 'orderadd',
+          component: orderadd
+        },
+        {
+          path: 'orderlist',
+          name: 'orderlist',
+          component: orderlist
         },
 
       ]

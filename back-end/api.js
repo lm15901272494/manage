@@ -499,10 +499,38 @@ app.get("/sortGet",(req,res)=>{
 
 
 
+//------------------------------------用户分析表--------------------------------
+const usersModel = require("./model/uservip")
+app.get("/vipGet",(req,res)=>{
+    usersModel.find({},(err,data)=>{
+        if(err){
+            res.send({"err_code":400})
+        }else{
+            res.send({"err_code":200,"data":data})
+        }
+    })
+})
 
-
-
-
+//分页接口
+//返回总条数   30
+const goodsModel=require("./model/goods")
+app.get("/goodList",(req,res)=>{
+    //得到总条数
+    goodsModel.count({},(err,data)=>{
+        res.send({"sum":data})
+    })
+})
+//分页返回数据   当前页数page=1  每条显示数据limit=3  
+app.get("/goodBreak",(req,res)=>{
+    //page   第几页
+    //limit  每页显示几条数据
+    let page=Number(req.query.page);
+    let limit=Number(req.query.limit);
+    //查询 --跳过几条--每页显示多少条
+    goodsModel.find({}).skip((page-1)*limit).limit(limit).exec((err,data)=>{
+        res.send({"info":data})
+    })
+})
 
 
 
