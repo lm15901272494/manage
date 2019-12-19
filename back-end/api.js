@@ -428,7 +428,7 @@ app.get("/checklimit", (req, res) => {
             })
     })
 })
-// -----------------------------------------------------------------------------------------------------------------
+// ------------------------------------商品分类管理-----------------------------------------------------------------------------
 // ******
 //商品分类管理-增加--图片上传
 //托管静态文件
@@ -497,6 +497,136 @@ app.get("/sortGet",(req,res)=>{
 //4、修改分类---根据分类id查找分类信息
 //5、修改分类---将查出来的数据修改
 
+//------------------------------增加商品-------------------------
+//缩略图上传
+let ministorage=multer.diskStorage({
+    //将文件存储到硬盘上
+    // 文件路径
+    destination:function(req,file,cb){
+         cb(null,"./public/mini")
+    },
+    //文件名
+    filename:function(req,file,cb){            
+        const filenameArr = file.originalname.split('.');
+        cb(null, Date.now() + '.' + filenameArr[filenameArr.length - 1]);
+
+    }   
+
+})
+var miniupload=multer({storage:ministorage});
+app.post("/minifileup",miniupload.single("picture"),(req,res)=>{
+     let minisrc="/mini/"+req.file.filename;
+     res.send({"minisrc":minisrc})
+})
+
+
+//上传轮播图
+let swiperstorage=multer.diskStorage({
+    destination:function(req,file,cb){
+         cb(null,"./public/swiper")
+    },
+    //文件名   根据时间戳将文件名转换为随机非汉字文件名
+    filename:function(req,file,cb){            
+        const filenameArr = file.originalname.split('.');
+        cb(null, Date.now() + '.' + filenameArr[filenameArr.length - 1]);
+
+    }   
+
+})
+var swiperupload=multer({storage:swiperstorage});
+app.post("/swiperfileup",swiperupload.single("picture"),(req,res)=>{
+     let swiperurl="/swiper/"+req.file.filename;
+     res.send({"swiperurl":swiperurl})
+})
+ 
+//添加商品
+const goodsModel=require('./model/goods')
+app.post("/goodadd",(req,res)=>{
+    // let {}=req.body;
+    let obj=req.body;
+    goodsModel.create(obj,(err,data)=>{
+        if(err){
+            res.send({"err_code":400})
+        }else{
+            res.send({"err_code":200,data:data})
+        }
+    })
+
+})
+
+//分页接口
+//返回总条数   30
+app.get("/goodList",(req,res)=>{
+    //得到总条数
+    let query={};
+    let flag=req.query.search;
+    if(flag){
+        if(req.query.goodsname !=""){
+            const reg=new RegExp(req.query.goodsname,'i')
+            query.goodsname={$regex:reg}
+            // query.goodsname=req.query.goodsname;
+        }
+        if(req.query.price!=""){
+            query.price=req.query.price;
+        }
+    }else{
+        query={}
+    }
+    goodsModel.countDocuments(query,(err,data)=>{
+        res.send({"sum":data})
+    })
+})
+//分页返回数据   当前页数page=1  每条显示数据limit=3  
+app.get("/goodBreak",(req,res)=>{
+    //page   第几页
+    //limit  每页显示几条数据
+    let page=Number(req.query.page);
+    let limit=Number(req.query.limit);
+    //搜索传参
+    let query={};
+    let flag=req.query.search;
+    if(flag){
+        if(req.query.goodsname !=""){
+            const reg=new RegExp(req.query.goodsname,'i')
+            query.goodsname={$regex:reg}
+            // query.goodsname=req.query.goodsname;
+        }
+        if(req.query.price!=""){
+            query.price=req.query.price;
+        }
+    }else{
+        query={}
+    }
+    //查询 --跳过几条--每页显示多少条
+    goodsModel.find(query,{goodsname:1,price:1,minisrc:1,txt:1,updown:1})
+    .skip((page-1)*limit).limit(limit).sort({"_id":-1}).exec((err,data)=>{
+        //sort({"_id":-1})倒叙返回
+        res.send({"info":data})
+    })
+})
+
+//修改switch 的值
+
+app.get("/updownval",(req,res)=>{
+    goodsModel.updateOne({_id:req.query.id},{updown:req.query.updown},(err,dtat)=>{
+        if(err){
+            res.send({"err_code":400})
+        }else{
+            res.send({"err_code":200})
+        }
+    })
+})                                                                                              
+
+//删除商品
+app.get("/goodDel",(req,res)=>{
+    goodsModel.deleteOne({_id:req.query.id},(err,data)=>{
+        if(err){
+            res.send({"err_code":400})
+        }else{
+            res.send({"err_code":200})
+        }
+    })
+})
 
 
 //------------------------------------用户分析表--------------------------------
@@ -511,29 +641,31 @@ app.get("/vipGet",(req,res)=>{
     })
 })
 
-//分页接口
-//返回总条数   30
-const goodsModel=require("./model/goods")
-app.get("/goodList",(req,res)=>{
-    //得到总条数
-    goodsModel.count({},(err,data)=>{
-        res.send({"sum":data})
+
+//--------------------------商品分析表-------------------------------------------------
+app.get("/goodAnalysis",(req,res)=>{
+    goodsModel.aggregate([
+        //根据分类id分组求个数---pid
+        {$group:{_id:"$pid",count:{$sum:1}}},
+        //通过pid对_id进行分组，
+        //连表查询 ---分类表---》分类名称
+        {
+            $lookup:{
+                from:"sorts",  //需要连接的表名
+                localField:"_id",  //本表需要关联的字段
+                foreignField: "_id",   //被连接表需要关联的字段
+                as:"arr"    //查询出结果的集合名
+            }
+           
+        }
+    ]).exec((err,data)=>{
+        let newarr=[];
+        for(let v of data){
+            newarr.push({title:v.arr[0].title,sum:v.count})
+        }
+        res.send(newarr)
     })
 })
-//分页返回数据   当前页数page=1  每条显示数据limit=3  
-app.get("/goodBreak",(req,res)=>{
-    //page   第几页
-    //limit  每页显示几条数据
-    let page=Number(req.query.page);
-    let limit=Number(req.query.limit);
-    //查询 --跳过几条--每页显示多少条
-    goodsModel.find({}).skip((page-1)*limit).limit(limit).exec((err,data)=>{
-        res.send({"info":data})
-    })
-})
-
-
-
 
 
 

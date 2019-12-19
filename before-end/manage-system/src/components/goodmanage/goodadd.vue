@@ -3,7 +3,7 @@
     <p class="title">用户分析</p>
     <h5>用户增长</h5>
     <hr />
-    <el-collapse v-model="activeNames" @change="handleChange">
+    <el-collapse>
       <el-collapse-item>
         <template slot="title">
           <div class="item_title" style="margin-left:10px;">商品信息</div>
@@ -11,13 +11,13 @@
         <div class="last_main">我是商品信息明细</div>
       </el-collapse-item>
     </el-collapse>
-    <!-- 搜索商品 -->
+    <!-- 添加商品 -->
     <div style="height:50px;border:1px solid #ccc;border-bottom:0;padding-left:10px;">
-      <label for="goodname" style="font:12px/50px '微软雅黑'">商品名称：</label>
+      <label for="goodsname" style="font:12px/50px '微软雅黑'">商品名称：</label>
       <input
-        v-model="input"
+        v-model="goodsname"
         placeholder="请输入商品名称"
-        id="goodname"
+        id="goodsname"
         type="text"
         style="padding:7px 60px;box-sizing:border-box;border-radius:5px;"
       />
@@ -28,9 +28,9 @@
     <div style="height:50px;border:1px solid #ccc;border-bottom:0;padding-left:10px;">
       <label for="goodname" style="font:12px/50px '微软雅黑'">商品价格：</label>
       <input
-        v-model="input"
+        v-model="price"
         placeholder="请输入商品价格"
-        id="goodname"
+        id="price"
         type="text"
         style="padding:7px 60px;box-sizing:border-box;border-radius:5px;"
       />
@@ -40,33 +40,18 @@
     <div class="suo_tu">
       <span>缩略图</span>
       <div class="suo_tu_main">
-        <el-upload action="#" list-type="picture-card" :auto-upload="false">
-          <i slot="default" class="el-icon-plus"></i>
-          <div slot="file" slot-scope="{file}">
-            <img class="el-upload-list__item-thumbnail" :src="file.url" alt />
-            <span class="el-upload-list__item-actions">
-              <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
-                <i class="el-icon-zoom-in"></i>
-              </span>
-              <span
-                v-if="!disabled"
-                class="el-upload-list__item-delete"
-                @click="handleDownload(file)"
-              >
-                <i class="el-icon-download"></i>
-              </span>
-              <span
-                v-if="!disabled"
-                class="el-upload-list__item-delete"
-                @click="handleRemove(file)"
-              >
-                <i class="el-icon-delete"></i>
-              </span>
-            </span>
-          </div>
+        <el-upload
+          class="avatar-uploader"
+          action="http://localhost:3000/minifileup"
+          name="picture"
+          :show-file-list="false"
+          :on-success="MiniSuccess"
+        >
+          <img v-if="minisrc" :src="`http://localhost:3000/${minisrc}`" class="avatar" />
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
-        <el-dialog :visible.sync="dialogVisible">
-          <img width="100%" :src="dialogImageUrl" alt />
+        <el-dialog>
+          <img width="100%" alt />
         </el-dialog>
         <div class="right">
           限上传一张图片
@@ -75,20 +60,21 @@
       </div>
     </div>
     <!-- 上传轮播图 -->
-    <div class="suo_tu">
+    <div class="swiper">
       <span>轮播顶图</span>
       <div class="suo_tu_main">
         <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
-          list-type="picture-card"
-          :on-preview="handlePictureCardPreview"
+          class="upload-demo"
+          action="http://localhost:3000/swiperfileup"
+          :on-preview="handlePreview"
           :on-remove="handleRemove"
+          :on-success="Swipersuccess"
+          :file-list="fileList"
+          name="picture"
+          list-type="picture"
         >
-          <i class="el-icon-plus"></i>
+          <el-button size="small" type="primary">点击上传</el-button>
         </el-upload>
-        <el-dialog :visible.sync="dialogVisible">
-          <img width="100%" :src="dialogImageUrl" alt />
-        </el-dialog>
         <div class="right">
           可上传多张图片
           <br />图片最佳尺寸为640*320像素
@@ -99,16 +85,16 @@
     <!-- 富文本编辑器 -->
     <div class="fuben">
       <div>商品详情</div>
-      <quill-editor v-model="content"></quill-editor>
+      <quill-editor v-model="txt"></quill-editor>
     </div>
     <!-- 是否进入方案库 -->
     <div class="fanganku">
       <div class="fanganku_title">是否申请进入方案库</div>
       <form class="fanganku_main">
-        <input type="checkbox" id="no" />
+        <input type="radio" id="no"  v-model="flag" value="false"/>
         <label for="no">否</label>
         <br />
-        <input type="checkbox" id="yes" />
+        <input type="radio" id="yes"  v-model="flag" value="true"/>
         <label for="yes">是</label>
         <select name id>
           <option value="选择建议上架分类">选择建议上架分类</option>
@@ -121,57 +107,143 @@
     <div class="shangxiajia">
       <div class="shangxiajia_title">是否申请上架</div>
       <form class="shangxiajia_main">
-        <input type="checkbox" id="no" />
+        <input type="radio" id="no" v-model="sign" value="false"/>
         <label for="no">下架</label>
         <br />
-        <input type="checkbox" id="yes" />
+        <input type="radio" id="yes" v-model="sign" value="true"/>
         <label for="yes">上架</label>
       </form>
     </div>
-    <!-- <div class="show_content" v-html="showcontent"></div> -->
+    <!-- 添加父级结构 -->
+    <el-form>
+      <el-form-item label="所属分类">
+        <div class="block">
+          <el-cascader v-model="pid" :options="options" :props="{ checkStrictly: true }" clearable></el-cascader>
+        </div>
+      </el-form-item>
+    </el-form>
+    <!-- 按钮 -->
     <el-button type="danger">预览</el-button>
     <el-button @click="add" type="danger">提交</el-button>
-    <el-button type="info">取消</el-button>
-    <el-button type="info">返回上一页</el-button>
+    <el-button type="info" @click="cancel">取消</el-button>
+    <el-button type="info" @click="$router.push({'name':'goodmanage'})">返回上一页</el-button>
   </div>
 </template>
 <script>
 import size from "@/components/goodmanage/size.vue";
+import tree from "@/myjs/tree.js";
 export default {
   data() {
     return {
-      content: "",
-      showcontent: "",
-      activeNames: "",
-      data: "",
-      input: "",
-      dialogImageUrl: "",
-      dialogVisible: false,
-      disabled: false
+      goodsname: "", //商品名称
+      price: "", //单价
+      txt: "", //富文本编辑器
+      minisrc: "", //缩略图
+      flag:true,
+      sign:true,
+      size: this.$store.state.size,
+      fileList: [],
+      pid: "", //父级分类id
+      options: []
     };
+  },
+  mounted() {
+    this.axios.get("/sortGet").then(res => {
+      let data = tree(res.data.data, 0);
+      this.options = [...this.options, ...data];
+    });
   },
   components: {
     size
   },
   methods: {
     add() {
-      this.showcontent = this.content;
+      let obj = {
+        goodsname: this.goodsname,
+        price: this.price,
+        txt: this.txt,
+        size: this.size,
+        minisrc: this.minisrc,
+        swipersrc: this.fileList,
+        enter: this.flag,
+        updown: this.sign,
+        pid:this.pid.pop()
+      };
+      this.axios.post("/goodadd", obj).then(res => {
+        console.log(res);
+        if(res.data.err_code==200){
+          alert("添加成功")
+         this.$store.state.size=[{
+                  name: "",
+                  item: [{itemname: "",price: ""},
+                    {itemname: "",price: ""}]
+                 }]
+          this.$router.push({'name':'goodmanage'})
+        }
+      });
     },
-    handleChange() {},
-    handleRemove(file) {
-      console.log(file);
+    cancel(){
+      this.goodsname="";
+      this.price='';
+      this.txt="";
+      this.$store.state.size=[{
+                  name: "",
+                  item: [{itemname: "",price: ""},
+                    {itemname: "",price: ""}]
+                 }]
+      this.minisrc='';
+      this.fileList=[];
+      this.flag=false;
+      this.sign=false;
+      this.pid="";
+
+      console.log(this.$store.state.size)
+
     },
-    handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
+
+    MiniSuccess(res) {
+      this.minisrc = res.minisrc;
     },
-    handleDownload(file) {
-      console.log(file);
-    }
+    Swipersuccess(res) {
+      this.fileList.push({
+        name: res.swiperurl,
+        url: `http://localhost:3000${res.swiperurl}`
+      });
+      // console.log(this.fileList);
+    },
+    handleRemove(file, fileList) {
+      // console.log(file, fileList);
+    },
+    handlePreview() {}
   }
 };
 </script>
 <style >
+/* 缩略图 */
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 150px;
+  height: 150px;
+  line-height: 150px;
+  text-align: center;
+}
+.avatar {
+  width: 150px;
+  height: 150px;
+  display: block;
+}
+
 .show_content {
   width: 100%;
   height: 300px;
@@ -189,6 +261,16 @@ export default {
 hr {
   border: 0.5px solid #cccccc;
 }
+.swiper {
+  color: #444;
+  font: 13px/30px "微软雅黑";
+  border: 1px solid #cccccc;
+  padding: 0 10px;
+  box-sizing: border-box;
+  margin: 3px 0;
+  min-height: 150px;
+}
+
 .suo_tu,
 .fanganku,
 .shangxiajia {

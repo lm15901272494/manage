@@ -22,12 +22,20 @@ import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.bubble.css'
 import 'quill/dist/quill.snow.css'
 Vue.use(QuillEditor)
+
+//载入echarts
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts
+
+//引入vuex,使用vuex
+import store from "@/store/store";
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
+  store,
   components: {
     App
   },

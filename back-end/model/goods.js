@@ -4,13 +4,15 @@ const db=require("../db.js");
 //1、创建  商品表的骨架
 const goodsSchema=db.Schema({
     goodsname:{type:String},
-    size:{type:Object},
     price:{type:String},
+    txt:{type:String},
+    size:{type:Object},
     minisrc:{type:String},
     swipersrc:{type:Array},
-    txt:{type:String},
     enter:{type:Boolean},
-    updown:{type:Boolean}
+    updown:{type:Boolean},
+    pid:{type:Object},
+
 
 })
 //2、生成模型

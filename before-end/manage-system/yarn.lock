@@ -2276,6 +2276,13 @@ duplexify@^3.4.2, duplexify@^3.6.0:
     readable-stream "^2.0.0"
     stream-shift "^1.0.0"
 
+echarts@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.npm.taobao.org/echarts/download/echarts-4.5.0.tgz#2111960645a345eb819ddac4792a2c065bdff162"
+  integrity sha1-IRGWBkWjReuBndrEeSosBlvf8WI=
+  dependencies:
+    zrender "4.1.2"
+
 ee-first@1.1.1:
   version "1.1.1"
   resolved "https://registry.npm.taobao.org/ee-first/download/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
@@ -7195,3 +7202,8 @@ yargs@~3.10.0:
     cliui "^2.1.0"
     decamelize "^1.0.0"
     window-size "0.1.0"
+
+zrender@4.1.2:
+  version "4.1.2"
+  resolved "https://registry.npm.taobao.org/zrender/download/zrender-4.1.2.tgz?cache=0&sync_timestamp=1576159866096&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fzrender%2Fdownload%2Fzrender-4.1.2.tgz#8368deff24c7e237cbcbd3a2ff93017905ae43f7"
+  integrity sha1-g2je/yTH4jfLy9Oi/5MBeQWuQ/c=

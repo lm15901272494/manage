@@ -46,14 +46,15 @@ export default {
       options: [
         {
           value: "0",
-          label: "一级分类",
+          label: "一级分类"
         }
       ]
+      
     };
   },
   mounted(){
     this.axios.get("/sortGet").then(res=>{
-      console.log(res)
+      // console.log(res)
       let data=tree(res.data.data,0);
       this.options=[...this.options,...data];
     })
@@ -66,9 +67,10 @@ export default {
         src:this.src,
         pid:this.pid.pop()
       }).then(res=>{
-        console.log(res)
+        // console.log(res)
         if(res.data.err_code==200){
           alert("添加成功")
+          this.$router.push({'name':'goodsort'})
         }else{
           alert("添加失败")
         }

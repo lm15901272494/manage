@@ -36,29 +36,26 @@ export default {
   },
   mounted() {
     this.axios.get("/sortGet").then(res => {
-      console.log(res.data.data);
+      // console.log(res.data.data);
       if (res.data.err_code == 200) {
         this.info = tree(res.data.data, 0);
-        console.log(this.info);
+        // console.log(this.info);
       }
     });
   },
   methods: {
     handleNodeClick(data) {
-      console.log(data);
+      // console.log(data);
     }
   }
 };
 </script>
-<style scoped>
+<style>
 .sort_img {
   width: 30px;
   height: 30px;
 }
-/* 
-element.style {
-    padding-left: 0px;
-} */
+
 .el-tree-node__content {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -66,7 +63,7 @@ element.style {
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
-    height: 0px;
+    height: 50px;
     cursor: pointer;
 }
 </style>

@@ -19,11 +19,14 @@
         <el-button type @click="addparams(index)">增加规格参数</el-button>
       </div>
     </div>
-    <el-button type="primary" plain  @click="addsize">增加规格</el-button>
+    <el-button type="primary" plain @click="addsize">增加规格</el-button>
   </div>
 </template>
 <script>
 export default {
+  mounted(){
+    // console.log(this.size)
+  },
   methods: { 
     addsize(){
       let obj={
@@ -49,15 +52,7 @@ export default {
 
   data() {
     return {
-      size: [
-        {
-          name: "华为手机",
-          item: [
-            { itemname: "星空蓝", price: 6666 },
-            { itemname: "土豪金", price: 4999 }
-          ]
-        },
-      ]
+      size: this.$store.state.size
     };
   }
 };

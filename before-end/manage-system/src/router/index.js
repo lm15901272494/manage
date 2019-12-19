@@ -14,8 +14,10 @@ const  rolechange =()=>import("@/components/limits/rolechange")
 const  managerlist =()=>import("@/components/limits/managerlist")
 const  manageradd =()=>import("@/components/limits/manageradd")
 const  managerchange =()=>import("@/components/limits/managerchange")
+//统计
 const useranalysis=()=>import("@/components/analysis/useranalysis")
 const orderanalysis=()=>import("@/components/analysis/orderanalysis")
+const goodanalysis=()=>import("@/components/analysis/goodanalysis")
 //商品分类管理
 const goodsort=()=>import("@/components/sortmanage/goodsort")
 const sortadd=()=>import("@/components/sortmanage/sortadd")
@@ -51,6 +53,11 @@ let router= new Router({
           path: 'orderanalysis',
           name: 'orderanalysis',
           component: orderanalysis
+        },
+        {
+          path: 'goodanalysis',
+          name: 'goodanalysis',
+          component: goodanalysis
         },
         {
           path: 'limitlist',
