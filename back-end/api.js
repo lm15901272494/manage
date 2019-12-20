@@ -668,6 +668,47 @@ app.get("/goodAnalysis",(req,res)=>{
 })
 
 
+//订单管理
+const ordersModel=require("./model/order")
+app.get("/orderFind",(req,res)=>{
+    ordersModel.find({},(err,data)=>{
+        res.send(data)
+    })
+})
+
+//分页查询
+app.get("/orderbreak",(req,res)=>{
+    console.log(req.query)
+    let page=Number(req.query.page);
+    let limit=Number(req.query.limit);
+    let search={};
+    //查询条件   订单号count   日期（开始日期，结束日期）date
+    if("count" in req.query&&req.query.count !=""){
+        search.count=req.query.count
+    }
+    if("date" in req.query&&req.query.date !=""){
+        search.paytime={$gt:req.query.date[0],$lt:req.query.date[1]}
+    }
+    console.log(search)
+    ordersModel.find(search).skip((page-1)*limit).limit(limit).sort({"paytime":-1}).exec((err,data)=>{
+        res.send(data)
+    })
+})
+
+//查询总条数
+app.get("/orderpage",(req,res)=>{
+    let search={};
+    //查询条件   订单号count   日期（开始日期，结束日期）date
+    if("count" in req.query&&req.query.count !=""){
+        search.count=req.query.count
+    }
+    if("date" in req.query&&req.query.date !=""){
+        search.paytime={$gt:req.query.date[0],$lt:req.query.date[1]}
+    }
+    ordersModel.count(search,(err,data)=>{
+        res.send({"sum":data})
+    })
+})
 
 
 

@@ -5,7 +5,7 @@ const login =()=>import("@/view/login");
 const base=()=>import("@/view/base");
 
 
-
+//权限
 const limitlist =()=>import("@/components/limits/limitlist")
 const  limitadd =()=>import("@/components/limits/limitadd")
 const  rolelist =()=>import("@/components/limits/rolelist")
@@ -44,6 +44,7 @@ let router= new Router({
       name: 'base',
       component: base,
       children:[
+        //分析
         {
           path: 'useranalysis',
           name: 'useranalysis',
@@ -59,6 +60,7 @@ let router= new Router({
           name: 'goodanalysis',
           component: goodanalysis
         },
+        // 权限
         {
           path: 'limitlist',
           name: 'limitlist',
@@ -99,6 +101,7 @@ let router= new Router({
           name: 'managerchange',
           component: managerchange
         },
+        // 商品分类管理
         {
           path: 'sortadd',
           name: 'sortadd',
@@ -109,6 +112,7 @@ let router= new Router({
           name: 'goodsort',
           component: goodsort
         },
+        // 商品添加
         {
           path: 'goodadd',
           name: 'goodadd',
@@ -119,6 +123,7 @@ let router= new Router({
           name: 'goodmanage',
           component: goodmanage
         },
+        // 订单管理
         {
           path: 'orderadd',
           name: 'orderadd',

@@ -21,6 +21,10 @@ import QuillEditor from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.bubble.css'
 import 'quill/dist/quill.snow.css'
+
+//引入vue-json-excel模块
+import JsonExcel from 'vue-json-excel'
+Vue.component('downloadExcel', JsonExcel)
 Vue.use(QuillEditor)
 
 //载入echarts
