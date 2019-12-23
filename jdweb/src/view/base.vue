@@ -11,7 +11,7 @@
                     @focus="focus"
                 />
                 </form>
-
+                
         </div>
         <div class="main">
             <router-view></router-view>
@@ -32,12 +32,11 @@ export default {
     data(){
         return{
             souval:"",
-
         }
     },
     methods:{
     focus(){
-        this.$router.push({"name":"searchlist"})
+        this.$router.push({"name":"search"})
     }
     }
 }
@@ -58,6 +57,7 @@ html,body,#app,.base{
 }
 .main{
     flex: 1;
+    overflow: hidden;
 }
 .footer ul{
     display: flex;

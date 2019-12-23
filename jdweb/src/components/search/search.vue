@@ -25,7 +25,10 @@ export default {
     };
   },
   methods: {
-    onSearch() {},
+    onSearch() {
+      // console.log(this.souval);
+      this.$router.push({name:"searchres",params:{goodsname:this.souval}})
+    },
     onCancel() {},
   }
 };

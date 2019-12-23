@@ -8,9 +8,11 @@ const base=()=>import("@/view/base");
 const msite=()=>import("@/components/base/msite");
 const sort=()=>import("@/components/base/sort");
 const car=()=>import("@/components/base/car");
+const list=()=>import("@/components/base/list");
 const person=()=>import("@/components/base/person");
 const info=()=>import("@/components/base/info");
-const searchlist=()=>import("@/components/search/searchlist");
+const search=()=>import("@/components/search/search");
+const searchres=()=>import("@/components/base/searchres");
 
 Vue.use(Router)
 
@@ -52,9 +54,19 @@ export default new Router({
           component: person
         },
         {
-          path: 'info/:id',
+          path: 'info',
           name: 'info',
           component: info
+        },
+        {
+          path: 'list/:id',
+          name: 'list',
+          component: list
+        },
+        {
+          path: 'searchres/:goodsname',
+          name: 'searchres',
+          component: searchres
         },
       ]
       
@@ -65,13 +77,13 @@ export default new Router({
       component: lead
     },
     {
-      path: 'searchlist',
-      name: 'searchlist',
-      component: searchlist
+      path: '/search',
+      name: 'search',
+      component: search
     },
     {
       path:"/",
-      redirect:"/base"
+      redirect:"/base/msite"
     }
   ]
 })

@@ -11,7 +11,7 @@ const goodsSchema=db.Schema({
     swipersrc:{type:Array},
     enter:{type:Boolean},
     updown:{type:Boolean},
-    pid:{type:Object},
+    pid:{type:db.Schema.Types.ObjectId},
 
 
 })
