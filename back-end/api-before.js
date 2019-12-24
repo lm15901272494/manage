@@ -7,6 +7,8 @@ app.use(cors())
 const bodyparser=require("body-parser");
 app.use(bodyparser.json())
 app.use(bodyparser.urlencoded({extended:true}))
+//载入jsonwebtoken
+let jwt = require("jsonwebtoken")
 //静态资源发布
 app.use(express.static("public"))
 app.listen(3333,()=>{
@@ -17,7 +19,7 @@ const sortModel=require("./model/sorts")
 
 //商品表
 const goodsModel=require("./model/goods")
-
+const usersModel=require("./model/users")
 //首屏分类接口
 app.get("/msitesort",(req,res)=>{
     sortModel.find({pid:0},(err,data)=>{
@@ -55,7 +57,6 @@ app.get("/sorttwo",(req,res)=>{
 //根据分类(一级，二级，三级等)ID查询商品--递归函数
 app.get("/getgoodbyid",(req,res)=>{
     let sortid=req.query.sortid;
-    console.log(sortid)
     //查找出所有商品
     sortModel.find({},(err,data)=>{
         let arr=[];
@@ -94,6 +95,92 @@ app.get("/search",(req,res)=>{
             res.send({"err_code":400})
         }else{
             res.send({"err_code":200,data:data})
+        }
+    })
+})
+
+//--------------------------------------------
+//根据商品id查询详情
+app.get("/infobyid",(req,res)=>{
+    goodsModel.find({_id:req.query.id},(err,data)=>{
+        if(err){
+            res.send({"err_code":400})
+        }else{
+            res.send({"err_code":200,data:data})
+        }
+    })
+})
+
+//用户注册接口
+app.post("/register",(req,res)=>{
+    let {username,password}=req.body;
+    let obj={
+        username:username,
+        password:password,
+        registertime:new Date().getTime()
+    }
+    usersModel.create(obj,(err,data)=>{
+        if(err){
+            res.send({"err_code":400})
+        }else{
+            res.send({"err_code":200})
+        }
+    })
+
+})
+
+//判断账号是否测存在
+app.post("/check",(req,res)=>{
+    let {username}=req.body;
+    let obj={
+        username:username,
+    }
+    usersModel.findOne(obj,(err,data)=>{
+        if(data){
+            res.send({"err_code":200})
+        }else{
+            res.send({"err_code":400})
+        }
+    })
+})
+//登录接口--token生成
+app.post("/login",(req,res)=>{
+    let {username,password} =req.body
+    usersModel.findOne({username:username,password:password},(err,data)=>{
+        if(data){
+            let content = {
+                id: data._id
+            }; // 要生成token的主题信息--通过什么生成token
+            let secretOrPrivateKey = "users" // 这是加密的key（密钥） 
+            let token = jwt.sign(content, secretOrPrivateKey, {
+                expiresIn: 60 *24*60// 1小时过期
+            });
+            res.send({
+                "err_code": 200,
+                "id": data._id,
+                "token": token,
+                "username":data.username
+            });
+           
+        }else{
+            res.send({"err_code": 400,})
+            
+        }
+    })
+})
+
+app.get('/checktoken', (req, res) => {
+    let token = req.headers.token; // 从body中获取token
+    let secretOrPrivateKey = "users"; // 这是加密的key（密钥） 
+    jwt.verify(token, secretOrPrivateKey, function (err) {
+        if (err) { //  时间失效的时候/ 伪造的token       
+            res.send({
+                'err_code': 400
+            });
+        } else {
+            res.send({
+                'err_code': 200
+            });
         }
     })
 })

@@ -4,11 +4,18 @@ import Router from 'vue-router'
 const lead=()=>import("@/view/lead"); 
 //主页
 const base=()=>import("@/view/base");
+const register=()=>import("@/view/register");
+const login=()=>import("@/view/login");
+
 //一级路由
 const msite=()=>import("@/components/base/msite");
 const sort=()=>import("@/components/base/sort");
 const car=()=>import("@/components/base/car");
 const list=()=>import("@/components/base/list");
+const order=()=>import("@/components/base/order");
+const address=()=>import("@/components/base/address");
+const addaddress=()=>import("@/components/base/addaddress");
+const editaddress=()=>import("@/components/base/editaddress");
 const person=()=>import("@/components/base/person");
 const info=()=>import("@/components/base/info");
 const search=()=>import("@/components/search/search");
@@ -52,21 +59,41 @@ export default new Router({
           path: 'person',
           name: 'person',
           component: person
-        },
+        }, 
         {
-          path: 'info',
-          name: 'info',
-          component: info
-        },
+          path: 'address',
+          name: 'address',
+          component: address
+        }, 
+        {
+          path: 'addaddress',
+          name: 'addaddress',
+          component: addaddress
+        }, 
+        {
+          path: 'editaddress',
+          name: 'editaddress',
+          component: editaddress
+        }, 
         {
           path: 'list/:id',
           name: 'list',
           component: list
         },
         {
+          path: 'info/:id',
+          name: 'info',
+          component: info
+        },
+        {
           path: 'searchres/:goodsname',
           name: 'searchres',
           component: searchres
+        },
+        {
+          path: 'order',
+          name: 'order',
+          component: order
         },
       ]
       
@@ -81,6 +108,17 @@ export default new Router({
       name: 'search',
       component: search
     },
+    {
+      path: '/register',
+      name: 'register',
+      component: register
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: login
+    },
+    
     {
       path:"/",
       redirect:"/base/msite"

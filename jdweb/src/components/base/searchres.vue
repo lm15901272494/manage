@@ -1,47 +1,51 @@
 <template>
   <div>
-    
-      <!-- 商品卡 -->
+    <!-- 商品卡 -->
     <van-card
       :price="val.price"
       :title="val.goodsname"
       :thumb="`${base.url}${val.minisrc}`"
       v-for="(val) in searchres"
       :key="val._id"
+      @click="goinfo(val._id)"
     />
-    <router-link to="/search" tag="div" v-if="searchres.length==0" class="alert">
-      未搜索到商品，请重新搜索
-    </router-link>
+    <router-link to="/search" tag="div" v-if="searchres.length==0" class="alert">未搜索到商品，请重新搜索</router-link>
   </div>
 </template>
 <script>
-import base from "@/myconfig/base.js"
+import base from "@/myconfig/base.js";
 export default {
-  data(){
-    return{
-      searchres:[],
-      base,
-    }
+  data() {
+    return {
+      searchres: [],
+      base
+    };
   },
-    mounted(){
-        let goodsname=this.$route.params.goodsname;
-        this.axios.get(`${base.url}/search`,{params:{
-            goodsname:goodsname
-        }}).then(res=>{
-            // console.log(res)
-            if(res.data.err_code==200){
-            this.searchres=res.data.data;
-            }else{
-
-            }
-        })
-    },
-    
-    
-}
+  mounted() {
+    let goodsname = this.$route.params.goodsname;
+    this.axios
+      .get(`${base.url}/search`, {
+        params: {
+          goodsname: goodsname
+        }
+      })
+      .then(res => {
+        // console.log(res)
+        if (res.data.err_code == 200) {
+          this.searchres = res.data.data;
+        } else {
+        }
+      });
+  },
+  methods: {
+    goinfo(id) {
+      this.$router.push({ name: "info", params: { id: id } });
+    }
+  }
+};
 </script>
 <style>
-.alert{
+.alert {
   width: 80%;
   height: 60px;
   background: lightsalmon;

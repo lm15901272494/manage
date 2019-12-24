@@ -68,6 +68,21 @@ export default {
     this.getsort();
 
   },
+  beforeRouteEnter(to,from,next){
+        next(vm=>{
+            vm.axios.get(`${base.url}/checktoken`,{headers:{
+                token:JSON.parse(localStorage.getItem("jd-webpack")).token
+            }}).then(res=>{
+                if(res.data.err_code==200){
+                    next()
+                }else{
+                    alert("登录过期，请重新登陆")
+                    vm.$router.push({name:"login"})
+                }
+            })
+        })
+
+    },
   methods: {
     onRefresh() {
       setTimeout(() => {
@@ -82,7 +97,6 @@ export default {
       })
     },
     run(id){
-      console.log(id)
       this.$router.push({name:"list",params:{"id":id}})
       // this.$router.push({path:`/base/list?sortid=${id}`})
 

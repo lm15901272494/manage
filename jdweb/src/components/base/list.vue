@@ -7,12 +7,19 @@
       :thumb="`${base.url}${val.minisrc}`"
       v-for="(val) in sortlist"
       :key="val._id"
+      @click="goinfo(val._id)"
     />
   </div>
 </template>
 <script>
 import base from "@/myconfig/base.js"
 export default {
+  methods:{
+    goinfo(id){
+      this.$router.push({name:"info",params:{id:id}})
+    }
+
+  },
     data(){
       return{
         sortlist:[],
@@ -25,9 +32,7 @@ export default {
         this.axios.get(`${base.url}/getgoodbyid`,{params:{
             sortid:id
         }}).then(res=>{
-            console.log(res)
             this.sortlist=res.data.data;
-
         })
     }
     

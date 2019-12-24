@@ -15,6 +15,8 @@ Vue.use(VueAxios,axios);
 // options 为可选参数，无则不传
 Vue.use(Lazyload);
 Vue.use(Vant);
+//引入store
+import store from "@/store/store.js"
 
 Vue.config.productionTip = false
 
@@ -22,6 +24,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

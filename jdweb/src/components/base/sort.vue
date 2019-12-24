@@ -38,7 +38,6 @@ export default {
   },
   methods:{
     run(id){
-      console.log(id)
       this.$router.push({name:'list',params:{id:id}})
     },
     onesort(){

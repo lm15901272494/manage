@@ -29,6 +29,10 @@ export default {
         {
           src:
             "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=4061862367,1251691765&fm=26&gp=0.jpg"
+        },
+        {
+          src:
+            "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=4061862367,1251691765&fm=26&gp=0.jpg"
         }
       ]
     };
@@ -36,8 +40,8 @@ export default {
   methods: {
     onChange(index) {
       //   alert("当前 Swipe 索引：" + index);
-      if(index==3){
-        this.$router.push({name:base})
+      if(index==4){
+        this.$router.push({name:"login"})
       }
     }
   }
